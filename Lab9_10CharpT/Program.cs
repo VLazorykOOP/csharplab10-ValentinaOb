@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,8 +15,7 @@ namespace Pr{
 
   switch(s){
     case 1: { task1();  break;}
-    //case 2: { task2();  break;}
-    //case 3: { task3();  break;}
+    case 2: { task2();  break;}
   }
       
     }
@@ -238,143 +237,101 @@ class ITriangle: Exception{
 }
 
 
-public class Сonveyor{
-  string name;
-  int numb;
-  int days;
-
-  Worker work;
-
-  public event WorkerEventHandler Work_fail;
-  string[] result; 
-
-  double failure;
-
-  Worker workers;
-  //Ambulance ambulanceman;
-  //FireDetect fireman;
 
 
-  //probability_of_worker_absence; //ймовірність відсутності робочих
-  //probability_of_failure; //ймовірність несправності
-  //probability_of_rejects; //ймовірність браку
+static void task2(){
+  Conveyor con = new Conveyor("Conv", 50,15,"Process",0);
+
+  Working w = new Working();
+  
+  con.probability_fail();  
+
+  w.On(con);
+  w.Off(con);  
+}
+
+public delegate void ConveyorEventHandler(object sender, ConveyorEventArgs e);
+public class ConveyorEventArgs : EventArgs{
+ public string Conveyer_name
+ { get; }
+public int Conveyer_numb
+ { get; }
+ public int Conveyer_day
+ { get;}
+ public string Conveyer_result{
+ get;}
+  public double Conveyer_failure{
+ get;}
+  public ConveyorEventArgs(string name, int numb, int day, double failure, string result){
+ Conveyer_name = name; Conveyer_numb = numb; Conveyer_day = day; Conveyer_failure = failure; Conveyer_result = result;
+ }
+
+ }
 
 
+public class Conveyor{
+  private string name;
+  private int numb;
+  private int days;
 
-  //public event FireEventHandler Fire;
+  public event ConveyorEventHandler Work_fail;
+  private string result; 
 
+  private double failure;
 
-  public void Conveyor(string name, int numb, int days){
+  public Conveyor(string name, int numb, int days, string result,double failure=0){
     this.name = name;
     this.numb = numb;
     this.days = days;
-    failure = 1e-3;
+    this.result = result;
+    this.failure = failure;
 
-    workers = new Worker(this);
-    //ambulanceman = new Ambulance(this);
-    //fireman = new FireDetect(this);
-    //policeman.On();
-    //ambulanceman.On();
-    //fireman.On();
   }
 
 
-protected virtual void OnWork(WorkerEventArgs e)
+protected virtual void OnWork(ConveyorEventArgs e)
  {
- const string MESSAGE_Work =
- $"On conveyer {sor} fail! Workers {5}. Day {13}";
- Console.WriteLine(string.Format(MESSAGE_Work, name,
- e.numb, e.day));
- if (Work_fail != null)
- {
- Delegate[] eventhandlers =
- Work_fail.GetInvocationList();
- result = new string[eventhandlers.Length];
- int k = 0;
- foreach (WorkerEventHandler evhandler in
- eventhandlers)
- {
- evhandler(this, e);
- result[k++] = e.Result;
- }
- }
+  Work_fail?.Invoke(this, e);
  }
 
 
-public void OurConv()
- {
- const string OK = $"On Conveyer {"k"} all is good!";
- bool wasfire = false;
- for (int day = 1; day <= days; day++)
- for (int numb = 1; building <= numb; numb++)
- {
- if (ran.NextDouble() < failure)
- {
- WorkerEventArgs e = new WorkerEventArgs(building, day);
- OnWork(e);
- wasfire = true;
- for (int i = 0; i < result.Length; i++)
- Console.WriteLine(result[i]);
+public void probability_fail(){
+  for (int i = 0; i < days; i++) {
+    Random r = new Random();
+    int n = r.Next(0, numb);
+                
+    failure=n/numb;
+
+    // Ймовірність несправностіі висока/мала
+    if (failure >= 0.25){
+      OnWork(new ConveyorEventArgs(name, numb, days, failure,"Normal"));
+    }
+    else {
+        OnWork(new ConveyorEventArgs(name, numb, days, failure, "So big!"));  }
+  }}
+}
+
+public class Working{
+public void On(Conveyor works){
+ works.Work_fail += WorkerEventHandl;
  }
- }
- if (!wasfire)
- Console.WriteLine(string.Format(OK, name));
+ public void Off(Conveyor works){
+ works.Work_fail -= WorkerEventHandl;
  }
 
-public abstract class Receiver{
-protected Worker work;
-protected Random rnd = new Random();
-public Receiver(Сonveyor conv)
- { this.work = work; }
- public void On()
- {
- work.wo += new WorkerEventHandler(It_is_Work);
- }
- public void Off()
- {
- work.wo -= new WorkerEventHandler(It_is_Work);
- }
- public abstract void It_is_Work(object sender, WorkerEventArgs e);
- }
-
-public class Worker : Receiver
- {
- public Worker(Worker work) : base(work) { }
- public override void It_is_Work(object sender, WorkerEventArgs e)
- {
- const string OK =
- "Мiлiцiя знайшла винних!";
- const string NOK =
- "Мiлiцiя не знайшла винних! Наслiдок триває.";
- if (rnd.Next(0, 10) > 6)
- e.Result = OK;
- else e.Result = NOK;
- }
- }
-
-
-public class WorkerEventArgs : EventArgs
- {
- int conv;
- int day;
- string result;
-public int Conveyer_name
- { get { return conv; } }
- public int Conveyer_day
- { get { return day; } }
- public string Conveyer_result
- {
- get { return result; }
- set { result = value; }
- }
-
-// Клас, задає вхiднi й вихiднi аргументи подiї
- public WorkerEventArgs(int conv, int day){
- this.conv = conv; this.day = day;
- }
- }
+public  void WorkerEventHandl(object sender, ConveyorEventArgs e){
+  Console.WriteLine($"Name: {e.Conveyer_name}, Numb: {e.Conveyer_numb}, Days: {e.Conveyer_day}, Resul: {e.Conveyer_result}, Failure: {e.Conveyer_failure}");
+}
 
 }
+
+
+
+
+
+
+
+
   }}
 
 
