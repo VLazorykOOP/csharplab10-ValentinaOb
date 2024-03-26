@@ -67,9 +67,9 @@ static void task1(){
     b=first.Sidegr;
 
 
-    if (a == k)
+    if (a.Length == k.Length)
         {
-            Console.Write("\nA & K Type Match");
+            Console.Write("\nA & K Length Match");
         }
         else
         {
@@ -77,7 +77,7 @@ static void task1(){
         }
 
     if(a[0]!=0){
-        Console.Write("\nK[0]/A[0]:"+k[0]/a[0]);
+        Console.Write("\nK[0]/A[0]: "+k[0]/a[0]);
     }
     else
         {
@@ -252,17 +252,12 @@ static void task2(){
 
 public delegate void ConveyorEventHandler(object sender, ConveyorEventArgs e);
 public class ConveyorEventArgs : EventArgs{
- public string Conveyer_name
- { get; }
-public int Conveyer_numb
- { get; }
- public int Conveyer_day
- { get;}
- public string Conveyer_result{
- get;}
-  public double Conveyer_failure{
- get;}
-  public ConveyorEventArgs(string name, int numb, int day, double failure, string result){
+public string Conveyer_name { get; }
+public int Conveyer_numb { get; }
+public int Conveyer_day { get;}
+public string Conveyer_result { get;}
+public double Conveyer_failure { get;}
+public ConveyorEventArgs(string name, int numb, int day, double failure, string result){
  Conveyer_name = name; Conveyer_numb = numb; Conveyer_day = day; Conveyer_failure = failure; Conveyer_result = result;
  }
 
@@ -307,7 +302,7 @@ public void probability_fail(){
       OnWork(new ConveyorEventArgs(name, numb, days, failure,"Normal"));
     }
     else {
-        OnWork(new ConveyorEventArgs(name, numb, days, failure, "So big!"));  }
+      OnWork(new ConveyorEventArgs(name, numb, days, failure, "So big!"));  }
   }}
 }
 
