@@ -8,7 +8,7 @@ namespace Pr{
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("\nLab 3");
+      Console.WriteLine("\nLab 10");
       
       Console.WriteLine("Choose task: ");
       int s = Convert.ToInt32(Console.ReadLine());
