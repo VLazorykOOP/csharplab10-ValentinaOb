@@ -241,13 +241,18 @@ class ITriangle: Exception{
 
 static void task2(){
   Conveyor con = new Conveyor("Conv", 50,15,"Process",0);
+  Conveyor con1 = new Conveyor("NextC", 35,27,"Process",0);
 
   Working w = new Working();
-  
-  con.probability_fail();  
 
   w.On(con);
+  w.On(con1);
+
+  con.probability_fail();    
+  con1.probability_fail();    
+  
   w.Off(con);  
+  w.Off(con1); 
 }
 
 public delegate void ConveyorEventHandler(object sender, ConveyorEventArgs e);
@@ -286,7 +291,13 @@ public class Conveyor{
 
 protected virtual void OnWork(ConveyorEventArgs e)
  {
-  Work_fail?.Invoke(this, e);
+
+  Delegate[]evhendler=Work_fail.GetInvocationList();
+  foreach (ConveyorEventHandler ev in
+ evhendler){
+   ev(this, e);
+
+  }
  }
 
 
@@ -295,7 +306,7 @@ public void probability_fail(){
     Random r = new Random();
     int n = r.Next(0, numb);
                 
-    failure=n/numb;
+    failure=(double)n/(double)numb;
 
     // Ймовірність несправностіі висока/мала
     if (failure >= 0.25){
@@ -319,11 +330,6 @@ public  void WorkerEventHandl(object sender, ConveyorEventArgs e){
 }
 
 }
-
-
-
-
-
 
 
 
